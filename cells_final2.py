@@ -37,7 +37,6 @@ def connected_component_analysis (img, min_area = 0, min_density = 0):
         w = stats[i, cv2.CC_STAT_WIDTH]
         h = stats[i, cv2.CC_STAT_HEIGHT]
         density = a / (w * h)
-        if (w == 250) or (h == 250): warn = 1 # слишком большая клетка
         if(a < min_area) or (density < min_density): 
             img[np.where(labels == i)] = 0
 
