@@ -26,11 +26,9 @@ def fill_holes (img):
 
 # анализ связных компонент
 def connected_component_analysis (img, min_area = 0, min_density = 0):
-    warn = 0
     connectivity = 4
     output = cv2.connectedComponentsWithStats(img, connectivity, cv2.CV_32S)
     num_labels = output[0]
-    kolvo = num_labels - 1
     labels = output[1]
     stats = output[2]
 
@@ -42,18 +40,6 @@ def connected_component_analysis (img, min_area = 0, min_density = 0):
         if (w == 250) or (h == 250): warn = 1 # слишком большая клетка
         if(a < min_area) or (density < min_density): 
             img[np.where(labels == i)] = 0
-            kolvo -= 1
-    return kolvo, warn
-
-# наложение маски (lth и  hth - по умолчанию граничные значения для HSV изображений в данной задаче)
-def image_filter (img, lth = (0, 128, 0), hth = (179, 255, 255)):
-    mask = cv2.inRange(img, lth, hth)
-    mask_filled = fill_holes(mask)
-    mask_eroded = cv2.erode(mask_filled, np.ones((13, 13)))
-    connected_component_analysis(mask_eroded, min_area = 150)
-    mask_dilated = cv2.dilate(mask_eroded, np.ones((13, 13)))
-    num_components, warn = connected_component_analysis(mask_dilated)
-    return mask_dilated, num_components, warn
 
 result_file = open("result.csv", 'w')
 
@@ -62,7 +48,7 @@ clipLimit_value, tileGridSize_value = 7 , 14
 clahe = cv2.createCLAHE(clipLimit=clipLimit_value, tileGridSize=(tileGridSize_value,tileGridSize_value))
 
 # выбор картинки
-selected_cell = 115 # номер картинки
+selected_cell = 155 # номер картинки
 if selected_cell < 10: file_name = "00"+str(selected_cell)
 elif selected_cell > 99: file_name = str(selected_cell)
 else: file_name = "0"+str(selected_cell)
